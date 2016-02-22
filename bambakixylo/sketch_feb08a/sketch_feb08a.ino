@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
  
-#define RXPIN 11 //TX on C/W connected to pin on arduino
-#define TXPIN 10 //RX on C/W connected to pin on arduino
+#define RXPIN 10 //TX on C/W connected to pin on arduino
+#define TXPIN 9 //RX on C/W connected to pin on arduino
  
 
 byte incomingByte;
