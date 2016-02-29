@@ -1,7 +1,7 @@
 #include <SoftwareSerial.h>
 
-#define RXPIN 10 //TX on C/W connected to pin on arduino
-#define TXPIN 9 //RX on C/W connected to pin on arduino
+#define RXPIN 3 //TX on C/W connected to pin on arduino
+#define TXPIN 2 //RX on C/W connected to pin on arduino
 #define hash_num 12289
 #define rock 575
 #define scissors 456
@@ -22,16 +22,20 @@ SoftwareSerial myserial(RXPIN, TXPIN);
 
 void setup()
 {
-    Serial.begin(9600); //arduino
-    myserial.begin(9600); //cotton wud
+  
+    Serial.begin(115200); //arduino
+    myserial.begin(115200); //cotton wud
     randomSeed(analogRead(0));
+    Serial.println("Yolo");
+
 }
 
 void loop()
 {
 
     myserial.write(cmd_scan, sizeof(cmd_scan)); //read command
-
+    
+    
     delay(1000); //Wait 1 Sec so it doesn't go H.A.M.
 
     int counter = 0;
