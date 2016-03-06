@@ -81,16 +81,23 @@ memset(outBuf,sizeof(outBuf),0);
     // Make a HTTP request:
     sprintf(outBuf,"GET /uprc/secret/firebaseTest.php?arduino_data=%d HTTP/1.1", random(300));
     client.println(outBuf);
-    client.println("Host: epics.ecn.purdue.edu");
+    memset(outBuf,sizeof(outBuf),0);
+    sprintf(outBuf,"Host: %s", server);
+    client.println(outBuf);
     client.println("Connection: close");
     client.println();
   }
-  printWifiStatus();
+  if (!client.connected()) {
+    Serial.println();
+    Serial.println("disconnecting from server.");
+    client.stop();
+    }
 
-  delay(2000);
+  delay(1000);
   
   // if the server's disconnected, stop the client:
  
+   client.stop();
 
     // do nothing forevermore:
 }
