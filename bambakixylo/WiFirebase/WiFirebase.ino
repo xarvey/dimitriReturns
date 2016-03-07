@@ -22,10 +22,16 @@
 
 #include <SPI.h>
 #include <WiFi101.h>
+#include <SoftwareSerial.h>
 
-char ssid[] = "Dingding de xiaowu"; //  your network SSID (name)
+#define CWRX 10
+#define CWTX 9
+char ssid[] = "Dingding de xiaowu"; //our network SSID (name)
 char pass[] = "5gerendejia";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
+
+SoftwareSerial cw(CWRX, CWTX);
+
 
 int status = WL_IDLE_STATUS;
 // if you don't want to use DNS (and reduce your sketch size)
@@ -37,10 +43,13 @@ char server[] = "epics.ecn.purdue.edu";    // name address for Google (using DNS
 // with the IP address and port of the server
 // that you want to connect to (port 80 is default for HTTP):
 WiFiClient client;
+byte cmdscan[] = {0x43, 0x03, 0x01};
 
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
+  cw.begin(9600);
+  
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
@@ -66,7 +75,7 @@ void setup() {
   }
   Serial.println("Connected to wifi");
   printWifiStatus();
-
+  
   Serial.println("\nStarting connection to server...");
   // if you get a connection, report back via serial:
 }
@@ -75,11 +84,29 @@ void loop() {
   // if there are incoming bytes available
   // from the server, read them and print them:
   char outBuf[128];
-memset(outBuf,sizeof(outBuf),0);
- if (client.connect(server, 80)) {
+  byte incomingByte;
+  memset(outBuf,sizeof(outBuf),0);
+  if (client.connect(server, 80)) {
     Serial.println("connected to server");
     // Make a HTTP request:
-    sprintf(outBuf,"GET /uprc/secret/firebaseTest.php?arduino_data=%d HTTP/1.1", random(300));
+    
+    int counter = 0;
+    int res[30] = { 0 };
+    int current_tag_hash = 0;
+         cw.write((byte *) cmdscan, sizeof(cmdscan));
+
+       while (cw.available()) {
+        incomingByte = cw.read();
+
+        if (counter >= 10) //store only ID bytes returned form scan command
+        {
+            res[counter - 10] = incomingByte;
+        }
+        counter++;
+    }
+
+    
+    sprintf(outBuf,"GET /uprc/secret/firebaseTest.php?arduino_data=%s HTTP/1.1", res);
     client.println(outBuf);
     memset(outBuf,sizeof(outBuf),0);
     sprintf(outBuf,"Host: %s", server);
