@@ -1,6 +1,6 @@
 #include <SoftwareSerial.h>
-#define RXPIN 10
-#define TXPIN 9
+#define RXPIN 51
+#define TXPIN 53
 SoftwareSerial cw(RXPIN, TXPIN);
 
 
@@ -25,8 +25,7 @@ delay(1000);
     Serial.print(incomingByte,HEX);
     Serial.print(" ");
   // put your main code here, to run repeatedly:
-
+  }
   Serial.println();
 
-}
 }
